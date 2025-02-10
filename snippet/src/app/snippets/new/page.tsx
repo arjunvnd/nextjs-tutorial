@@ -1,24 +1,12 @@
-import { db } from "@/db";
-import { redirect } from "next/navigation";
+"use client";
+import { useActionState } from "react";
+import { crateSnippet } from "@/actions";
 
 export default function SnippetCreateOage() {
-  async function crateSnippet(formData: FormData) {
-    "use server";
-    const title = formData.get("title") as string;
-    const code = formData.get("code") as string;
-
-    const snippet = await db.snippet.create({
-      data: {
-        title,
-        code,
-      },
-    });
-    console.log("This is the snippet", snippet);
-    redirect("/");
-  }
+  const [formState, action] = useActionState(crateSnippet, { message: "" });
 
   return (
-    <form action={crateSnippet}>
+    <form action={action}>
       <h3 className="font-bold">Create a Snippet</h3>
       <div className="flex flex-col gap-4">
         <div className="flex gap-4">
@@ -34,7 +22,7 @@ export default function SnippetCreateOage() {
         </div>
         <div className="flex gap-4">
           <label htmlFor="code" className="w-12">
-            Title
+            Code
           </label>
           <textarea
             name="code"
@@ -42,6 +30,11 @@ export default function SnippetCreateOage() {
             id="code"
           />
         </div>
+        {formState.message ? (
+          <div className="my-2 p-2 bg-red-200 border rounded border-red-400">
+            {formState.message}
+          </div>
+        ) : null}
         <button type="submit" className="rounded p-2 bg-blue-200">
           Submit
         </button>
