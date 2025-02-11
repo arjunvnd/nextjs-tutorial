@@ -1,12 +1,20 @@
 "use client";
-import { useActionState } from "react";
+import { startTransition, useActionState } from "react";
 import { crateSnippet } from "@/actions";
 
 export default function SnippetCreateOage() {
   const [formState, action] = useActionState(crateSnippet, { message: "" });
 
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    startTransition(() => {
+      action(formData);
+    });
+  };
+
   return (
-    <form action={action}>
+    <form onSubmit={handleSubmit}>
       <h3 className="font-bold">Create a Snippet</h3>
       <div className="flex flex-col gap-4">
         <div className="flex gap-4">
