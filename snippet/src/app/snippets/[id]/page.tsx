@@ -7,6 +7,9 @@ interface SnippetShowPageProps {
   params: Promise<{ id: string }>;
 }
 export default async function SnippetShowPage(props: SnippetShowPageProps) {
+  await new Promise((r) => {
+    setTimeout(r, 2000);
+  });
   const { id } = await props.params;
 
   const snippet = await db.snippet.findFirst({
@@ -40,4 +43,13 @@ export default async function SnippetShowPage(props: SnippetShowPageProps) {
       </pre>
     </div>
   );
+}
+
+export async function generateStaticParams() {
+  const snippets = await db.snippet.findMany();
+  return snippets.map((snippet) => {
+    return {
+      id: snippet.id.toString(),
+    };
+  });
 }
